@@ -1,14 +1,37 @@
 {
-    "name": "Chisel VPN Tunnel",
-    "image": "ubuntu:22.04",
-    "postCreateCommand": "apt-get update -qq && apt-get install -y -qq curl ca-certificates && curl -sL -o /tmp/chisel.gz 'https://github.com/jpillora/chisel/releases/download/v1.11.8/chisel_1.11.8_linux_amd64.gz' && gunzip -f /tmp/chisel.gz && chmod +x /tmp/chisel && cp /tmp/chisel /usr/local/bin/chisel",
-    "postStartCommand": "nohup chisel server --port 8080 --reverse --keepalive 25s > /tmp/chisel.log 2>&1 &",
-    "forwardPorts": [8080],
+    "name": "VPN Chisel Server",
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "postCreateCommand": "curl -sL -o /tmp/chisel.gz 'https://github.com/jpillora/chisel/releases/download/v1.11.8/chisel_1.11.8_linux_amd64.gz' && gunzip -f /tmp/chisel.gz && chmod +x /tmp/chisel && sudo cp /tmp/chisel /usr/local/bin/chisel",
+    "postStartCommand": "bash /workspaces/vpn-configs/codespace/start.sh",
+    "forwardPorts": [8080, 8081, 9443],
     "portsAttributes": {
         "8080": {
             "label": "Chisel Server",
             "onAutoForward": "notify",
             "requireLocalPort": false
+        },
+        "8081": {
+            "label": "Subscription (Caddy → WSL)",
+            "onAutoForward": "openBrowser",
+            "requireLocalPort": false,
+            "visibility": "public"
+        },
+        "9443": {
+            "label": "VPN WebSocket (Xray → WSL)",
+            "onAutoForward": "notify",
+            "requireLocalPort": false,
+            "visibility": "public"
+        }
+    },
+    "customizations": {
+        "codespaces": {
+            "repos": {
+                "muromec061-cyber/vpn-configs": {
+                    "permissions": {
+                        "contents": "write"
+                    }
+                }
+            }
         }
     }
 }
