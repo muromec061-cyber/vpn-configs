@@ -1,0 +1,17 @@
+[Unit]
+Description=Chisel VPN Tunnel Client to GitHub Codespace
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+ExecStart=/usr/local/bin/chisel client \
+  --keepalive 25s \
+  https://vigilant-zebra-7vq4g4qg46gv3wp9q-8080.app.github.dev \
+  R:8081:localhost:80 \
+  R:9443:localhost:8448
+
+[Install]
+WantedBy=multi-user.target
