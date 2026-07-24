@@ -2,24 +2,11 @@
     "name": "VPN Chisel Tunnel",
     "image": "mcr.microsoft.com/devcontainers/universal:2",
     "postCreateCommand": "curl -sL -o /tmp/chisel.gz 'https://github.com/jpillora/chisel/releases/download/v1.11.8/chisel_1.11.8_linux_amd64.gz' && gunzip -f /tmp/chisel.gz && chmod +x /tmp/chisel && sudo cp /tmp/chisel /usr/local/bin/chisel && nohup chisel server --port 8080 --reverse --keepalive 25s > /tmp/chisel.log 2>&1 &",
+    "postStartCommand": "nohup chisel server --port 8080 --reverse --keepalive 25s > /tmp/chisel.log 2>&1 &",
     "forwardPorts": [8080, 8081, 9443],
     "portsAttributes": {
-        "8080": {
-            "label": "Chisel Server",
-            "onAutoForward": "notify",
-            "requireLocalPort": false
-        },
-        "8081": {
-            "label": "Subscription (WSL Caddy)",
-            "onAutoForward": "notify",
-            "requireLocalPort": false,
-            "visibility": "public"
-        },
-        "9443": {
-            "label": "VPN WebSocket (WSL Xray)",
-            "onAutoForward": "notify",
-            "requireLocalPort": false,
-            "visibility": "public"
-        }
+        "8080": { "label": "Chisel Server", "onAutoForward": "notify", "requireLocalPort": false },
+        "8081": { "label": "Subscription (WSL Caddy)", "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" },
+        "9443": { "label": "VPN WebSocket (WSL Xray)", "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" }
     }
 }
