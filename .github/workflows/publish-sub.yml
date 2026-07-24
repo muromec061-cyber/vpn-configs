@@ -1,0 +1,60 @@
+name: Publish Subscription to GitHub Pages
+
+on:
+  schedule:
+    # Every 30 minutes
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate Subscription Configs
+        env:
+          CODESPACE_URL: ${{ secrets.CODESPACE_URL || '' }}
+          REALITY_UUID: ${{ secrets.REALITY_UUID || 'a0ecae9d-cf2a-492f-8b14-de8c94172974' }}
+          REALITY_PUBLIC_KEY: ${{ secrets.REALITY_PUBLIC_KEY || '' }}
+          REALITY_SHORT_ID: ${{ secrets.REALITY_SHORT_ID || 'e332a3c9c4381c5a' }}
+          SS_PASSWORD: ${{ secrets.SS_PASSWORD || '' }}
+          WS_PATH: ${{ secrets.WS_PATH || '/vpn' }}
+        run: |
+          mkdir -p subscription
+          cat > subscription/sub.txt << EOF
+          # VPN Configs
+          # Generated: $(date -u)
+          # Server: ${CODESPACE_URL:-codespace-url-not-set}
+          
+          === VLESS Reality ===
+          vless://${REALITY_UUID}@${CODESPACE_URL:-localhost}:443?flow=xtls-rprx-vision&security=reality&pbk=${REALITY_PUBLIC_KEY}&fp=chrome&spx=%2F&sni=www.microsoft.com&sid=${REALITY_SHORT_ID}#VPN-Reality
+          
+          === Shadowsocks 2022 ===
+          ss://2022-blake3-aes-256-gcm:${SS_PASSWORD}@${CODESPACE_URL:-localhost}:8443#VPN-SS2022
+          
+          === Xray WebSocket ===
+          vless://${REALITY_UUID}@${CODESPACE_URL:-localhost}:443?security=tls&type=ws&path=${WS_PATH}&host=${CODESPACE_URL:-localhost}#VPN-WS
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./subscription
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

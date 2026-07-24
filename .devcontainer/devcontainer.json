@@ -1,0 +1,25 @@
+{
+    "name": "VPN Chisel Server",
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "postCreateCommand": "curl -sL -o /tmp/chisel.gz 'https://github.com/jpillora/chisel/releases/download/v1.11.8/chisel_1.11.8_linux_amd64.gz' && gunzip -f /tmp/chisel.gz && chmod +x /tmp/chisel && sudo cp /tmp/chisel /usr/local/bin/chisel",
+    "postStartCommand": "bash /workspaces/vpn-configs/codespace/start.sh",
+    "forwardPorts": [8080],
+    "portsAttributes": {
+        "8080": {
+            "label": "Chisel Server",
+            "onAutoForward": "notify",
+            "requireLocalPort": false
+        }
+    },
+    "customizations": {
+        "codespaces": {
+            "repos": {
+                "muromec061-cyber/vpn-configs": {
+                    "permissions": {
+                        "contents": "write"
+                    }
+                }
+            }
+        }
+    }
+}
