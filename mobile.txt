@@ -1,0 +1,1 @@
+vless://a0ecae9d-cf2a-492f-8b14-de8c94172974@vigilant-zebra-7vq4g4qg46gv3wp9q-9443.app.github.dev:443?encryption=none&security=tls&type=ws&path=/vpn&host=vigilant-zebra-7vq4g4qg46gv3wp9q-9443.app.github.dev#MyPC-Mobile-CS
