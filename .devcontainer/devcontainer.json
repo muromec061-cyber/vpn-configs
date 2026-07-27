@@ -8,5 +8,6 @@
         "8080": { "label": "Chisel Server", "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" },
         "8081": { "label": "Subscription (WSL Caddy)", "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" },
         "9443": { "label": "VPN WebSocket (WSL Xray)", "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" }
-    }
+    },
+    "codespacesIdleTimeoutMinutes": 120
 }

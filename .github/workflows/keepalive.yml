@@ -1,0 +1,42 @@
+name: Keep Codespace Alive
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Keep VPN Codespace alive
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          CSNAME="vigilant-zebra-7vq4g4qg46gv3wp9q"
+          
+          # Get state
+          STATE=$(gh api "user/codespaces/$CSNAME" --jq '.state' 2>/dev/null || echo "unknown")
+          echo "State: $STATE"
+          
+          if [ "$STATE" = "Shutdown" ] || [ "$STATE" = "ShuttingDown" ]; then
+            echo "Codespace is $STATE. Starting..."
+            gh api -X POST "user/codespaces/$CSNAME/start" --jq '.state'
+            echo "Waiting 60s for start..."
+            sleep 60
+          fi
+          
+          if [ "$STATE" = "Available" ]; then
+            echo "Codespace is running. Setting ports public..."
+            gh codespace ports visibility 8080:public -c $CSNAME 2>/dev/null || true
+            gh codespace ports visibility 8081:public -c $CSNAME 2>/dev/null || true
+            gh codespace ports visibility 9443:public -c $CSNAME 2>/dev/null || true
+            gh codespace ports -c $CSNAME 2>/dev/null || true
+            
+            echo "Pinging subscription..."
+            curl -s -o /dev/null -w "HTTP %{http_code}\n" --max-time 10 "https://$CSNAME-8081.app.github.dev/raw" || echo "Not yet available"
+          fi
+          
+          echo "Done"
