@@ -1,13 +1,14 @@
 {
-    "name": "VPN Chisel Tunnel",
+    "name": "VPN Xray Reality Server",
     "image": "mcr.microsoft.com/devcontainers/universal:2",
-    "postCreateCommand": "curl -sL -o /tmp/chisel.gz 'https://github.com/jpillora/chisel/releases/download/v1.11.8/chisel_1.11.8_linux_amd64.gz' && gunzip -f /tmp/chisel.gz && chmod +x /tmp/chisel && sudo cp /tmp/chisel /usr/local/bin/chisel && nohup chisel server --port 8080 --reverse --keepalive 25s > /tmp/chisel.log 2>&1 &",
-    "postStartCommand": "nohup chisel server --port 8080 --reverse --keepalive 25s > /tmp/chisel.log 2>&1 &",
-    "forwardPorts": [8080, 8081, 9443],
+    "postCreateCommand": "bash /workspaces/vpn-configs/codespace/setup.sh",
+    "postStartCommand": "nohup xray run -c /usr/local/etc/xray/config.json > /tmp/xray.log 2>&1 & nohup python3 -m http.server 8080 --bind 0.0.0.0 --directory /workspaces/vpn-configs > /tmp/sub-server.log 2>&1 &",
+    "forwardPorts": [8080, 10443, 10444, 10445],
     "portsAttributes": {
-        "8080": { "label": "Chisel Server", "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" },
-        "8081": { "label": "Subscription (WSL Caddy)", "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" },
-        "9443": { "label": "VPN WebSocket (WSL Xray)", "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" }
+        "8080":  { "label": "Subscription Server",  "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" },
+        "10443": { "label": "VLESS Reality XTLS",   "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" },
+        "10444": { "label": "VLESS WS TLS",         "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" },
+        "10445": { "label": "Shadowsocks 2022",     "onAutoForward": "notify", "requireLocalPort": false, "visibility": "public" }
     },
     "codespacesIdleTimeoutMinutes": 120
 }

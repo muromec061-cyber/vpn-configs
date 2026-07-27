@@ -1,0 +1,75 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "port": 10443,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "bac4dab0-fd34-414d-bdb2-eadab83b2205",
+            "flow": "xtls-rprx-vision"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "reality",
+        "realitySettings": {
+          "dest": "www.microsoft.com:443",
+          "serverNames": [
+            "www.microsoft.com",
+            "www.bing.com",
+            "www.office.com"
+          ],
+          "privateKey": "2DBTaG93Ia+0GFfZvuzKRfyT9kSJnw1KFEulSY7fw2k=",
+          "shortIds": [
+            "ecbcf1be",
+            "6ba85179e3"
+          ]
+        }
+      },
+      "tag": "reality-in"
+    },
+    {
+      "port": 10444,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "bac4dab0-fd34-414d-bdb2-eadab83b2205"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "wsSettings": {
+          "path": "/ws",
+          "headers": {}
+        }
+      },
+      "tag": "ws-tls-in"
+    },
+    {
+      "port": 10445,
+      "protocol": "shadowsocks",
+      "settings": {
+        "method": "2022-blake3-aes-128-gcm",
+        "password": "hJmFp8vL2sXkR5wQ",
+        "network": "tcp,udp"
+      },
+      "tag": "ss-in"
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "tag": "direct"
+    }
+  ]
+}
