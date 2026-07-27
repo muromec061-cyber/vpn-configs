@@ -47,21 +47,19 @@
       },
       "streamSettings": {
         "network": "ws",
-        "security": "tls",
+        "security": "none",
         "wsSettings": {
-          "path": "/ws",
-          "headers": {}
+          "path": "/ws"
         }
       },
-      "tag": "ws-tls-in"
+      "tag": "ws-in"
     },
     {
       "port": 10445,
       "protocol": "shadowsocks",
       "settings": {
         "method": "2022-blake3-aes-128-gcm",
-        "password": "hJmFp8vL2sXkR5wQ",
-        "network": "tcp,udp"
+        "password": "A+/pcAZ6Rh5sYxVKhWTM8Q=="
       },
       "tag": "ss-in"
     }
